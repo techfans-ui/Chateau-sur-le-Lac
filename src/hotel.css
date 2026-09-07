@@ -1,5 +1,5 @@
 .site-header { align-items:center; color:var(--ink); display:flex; height:88px; justify-content:space-between; left:0; padding:0 5vw; position:absolute; right:0; top:0; z-index:20; }
-.brand { align-items:center; color:inherit; display:flex; font:1.18rem var(--display); gap:12px; text-decoration:none; }
+.brand { align-items:center; color:#000; display:flex; font:1.18rem var(--display); gap:12px; text-decoration:none; }
 .brand-mark { align-items:center; border:1px solid currentColor; display:inline-flex; font:0.6rem var(--sans); height:34px; justify-content:center; letter-spacing:.08em; transform:rotate(45deg); width:34px; }
 .brand-mark::first-line { transform:rotate(-45deg); }
 .nav-links { align-items:center; display:flex; gap:32px; }
