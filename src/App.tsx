@@ -25,12 +25,6 @@ const suites = [
     price: 'À partir de 620 €',
     image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=85',
   },
-  {
-    name: 'Appartement du Château',
-    detail: '4 hôtes · 86 m²',
-    price: 'À partir de 890 €',
-    image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=85',
-  },
 ]
 
 function App() {
@@ -203,9 +197,9 @@ function App() {
 
       <footer>
         <div className="footer-brand"><span className="brand-mark">CSL</span><h2>Château sur le Lac</h2><p>Par Mille Océans · Banfora</p></div>
-        <div><h3>Nous trouver</h3><p>Rive des Cèdres<br />74290, France</p><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a></div>
+        <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href="https://wa.me/12542160899" target="_blank" rel="noreferrer">WhatsApp&nbsp;: +1 254 216 0899</a></div>
         <div><h3>Le Château</h3><a href="#suites">Chambres & Suites</a><a href="#experiences">Expériences</a><a href="#table">La Table</a></div>
-        <div><h3>Suivez-nous</h3><a href="#instagram">Instagram</a><a href="#pinterest">Pinterest</a><a href="#newsletter">La Lettre du Lac</a></div>
+        <div><h3>Suivez-nous</h3><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a><a href="#newsletter">La Lettre du Lac</a></div>
         <div className="footer-bottom"><span>© 2026 Château sur le Lac</span><span>Mentions légales · Confidentialité</span></div>
       </footer>
     </main>

@@ -8,8 +8,8 @@
 .nav-book,.availability { background:var(--rust); border:0; color:white; cursor:pointer; font:600 .68rem var(--sans); padding:17px 24px; text-transform:uppercase; }
 .menu-button { background:transparent; border:0; color:var(--ink); display:none; }
 .menu-button.open { color:white; }
-.hero { align-items:center; background:var(--green) url('/hero.jpg') center/cover no-repeat; color:white; display:flex; justify-content:center; min-height:91svh; padding:120px 7vw; position:relative; text-align:center; }
-.hero-shade { background:linear-gradient(90deg, rgba(11,24,21,.5), rgba(11,24,21,.12) 70%),linear-gradient(0deg, rgba(4,13,11,.4), transparent 55%); inset:0; position:absolute; }
+.hero { align-items:center; background:#f7f3eb url('/hero.jpg') center/contain no-repeat; color:var(--ink); display:flex; justify-content:center; min-height:91svh; padding:120px 7vw; position:relative; text-align:center; }
+.hero-shade { display:none; }
 .hero-content { max-width:900px; position:relative; z-index:2; }
 .hero-content .eyebrow, .hero-content h1, .hero-copy { text-shadow:0 2px 18px rgba(8,18,15,.55); }
 .hero .eyebrow { align-items:center; display:inline-flex; gap:16px; }
