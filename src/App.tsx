@@ -33,10 +33,27 @@ function App() {
   const [confirmation, setConfirmation] = useState(false)
   const [arrival, setArrival] = useState('2026-09-12')
   const [departure, setDeparture] = useState('2026-09-15')
+  const [room, setRoom] = useState('Suite du Lac')
+  const [guestName, setGuestName] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
+  const [guestEmail, setGuestEmail] = useState('')
+  const [language, setLanguage] = useState<'fr' | 'en'>('fr')
+  const [submitted, setSubmitted] = useState(false)
+
+  const copy = language === 'fr'
+    ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.' }
+    : { arrival: 'Check-in', departure: 'Check-out', guests: 'Guests', availability: 'Check availability', reserve: 'Book now', details: 'Prepare my reservation', room: 'Room or suite', name: 'Full name', phone: 'Phone', email: 'Email', payment: 'Payment: Orange Money Burkina Faso', paymentCopy: 'We will confirm availability and send payment instructions after your request.', send: 'Send request on WhatsApp', sent: 'Your request is ready. Our team will reply on WhatsApp.' }
 
   const scrollToBooking = () => {
     document.querySelector('#reservation')?.scrollIntoView({ behavior: 'smooth' })
     setMenuOpen(false)
+  }
+
+  const sendBooking = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setSubmitted(true)
+    const message = `${copy.reserve} - Château sur le Lac%0A${copy.name}: ${guestName}%0A${copy.phone}: ${guestPhone}%0A${copy.email}: ${guestEmail}%0A${copy.room}: ${room}%0A${copy.arrival}: ${arrival}%0A${copy.departure}: ${departure}%0A${copy.guests}: ${guests}`
+    window.open(`https://wa.me/12542160899?text=${message}`, '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -51,8 +68,9 @@ function App() {
           <a href="#suites" onClick={() => setMenuOpen(false)}>Suites</a>
           <a href="#experiences" onClick={() => setMenuOpen(false)}>Expériences</a>
           <a href="#table" onClick={() => setMenuOpen(false)}>La Table</a>
-          <button className="nav-book" onClick={scrollToBooking}>Réserver</button>
+          <button className="nav-book" onClick={scrollToBooking}>{copy.reserve}</button>
         </nav>
+        <button className="language-toggle" onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')} aria-label="Changer de langue">{language.toUpperCase()}</button>
         <button
           className={menuOpen ? 'menu-button open' : 'menu-button'}
           aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
@@ -72,15 +90,15 @@ function App() {
       <section className="booking-wrap" id="reservation">
         <div className="booking-bar">
           <label>
-            <span>Arrivée</span>
+            <span>{copy.arrival}</span>
             <span className="field-value"><CalendarDays size={18} /><input aria-label="Date d'arrivée" type="date" value={arrival} onChange={(event) => setArrival(event.target.value)} /></span>
           </label>
           <label>
-            <span>Départ</span>
+            <span>{copy.departure}</span>
             <span className="field-value"><CalendarDays size={18} /><input aria-label="Date de départ" type="date" value={departure} min={arrival} onChange={(event) => setDeparture(event.target.value)} /></span>
           </label>
           <div className="guest-field">
-            <span>Voyageurs</span>
+            <span>{copy.guests}</span>
             <div className="guest-control">
               <Users size={18} />
               <button aria-label="Retirer un voyageur" onClick={() => setGuests(Math.max(1, guests - 1))}><Minus size={14} /></button>
@@ -88,13 +106,27 @@ function App() {
               <button aria-label="Ajouter un voyageur" onClick={() => setGuests(Math.min(8, guests + 1))}><Plus size={14} /></button>
             </div>
           </div>
-          <button className="availability" onClick={() => setConfirmation(true)}>Voir les disponibilités</button>
+          <button className="availability" onClick={() => setConfirmation(true)}>{copy.availability}</button>
         </div>
         {confirmation && (
           <div className="confirmation" role="status">
-            <span>Votre séjour pour {guests} {guests > 1 ? 'voyageurs' : 'voyageur'} est prêt à être composé.</span>
+            <span>{copy.details}: {guests} {copy.guests.toLowerCase()}.</span>
             <button onClick={() => setConfirmation(false)} aria-label="Fermer"><X size={18} /></button>
           </div>
+        )}
+        {confirmation && (
+          <form className="reservation-form" onSubmit={sendBooking}>
+            <div className="form-heading"><div><p className="eyebrow dark">Château sur le Lac</p><h3>{copy.details}</h3></div><span className="payment-badge">Orange Money</span></div>
+            <div className="form-grid">
+              <label><span>{copy.name}</span><input required value={guestName} onChange={(event) => setGuestName(event.target.value)} /></label>
+              <label><span>{copy.phone}</span><input required type="tel" value={guestPhone} onChange={(event) => setGuestPhone(event.target.value)} /></label>
+              <label><span>{copy.email}</span><input required type="email" value={guestEmail} onChange={(event) => setGuestEmail(event.target.value)} /></label>
+              <label><span>{copy.room}</span><select value={room} onChange={(event) => setRoom(event.target.value)}>{suites.map((suite) => <option key={suite.name}>{suite.name}</option>)}</select></label>
+            </div>
+            <p className="payment-note"><strong>{copy.payment}</strong><br />{copy.paymentCopy}</p>
+            <button className="availability" type="submit">{copy.send} <ArrowRight size={16} /></button>
+            {submitted && <p className="form-success" role="status">{copy.sent}</p>}
+          </form>
         )}
       </section>
 
@@ -199,7 +231,7 @@ function App() {
 
       <footer>
         <div className="footer-brand"><span className="brand-mark">CSL</span><h2>Château sur le Lac</h2><p>Par Mille Océans · Banfora</p></div>
-        <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href="https://wa.me/12542160899" target="_blank" rel="noreferrer">WhatsApp&nbsp;: +1 254 216 0899</a></div>
+        <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="https://maps.google.com/?q=Banfora%2C%20Cascades%2C%20Burkina%20Faso" target="_blank" rel="noreferrer">Voir l’itinéraire</a><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href="https://wa.me/12542160899" target="_blank" rel="noreferrer">WhatsApp&nbsp;: +1 254 216 0899</a></div>
         <div><h3>Le Château</h3><a href="#suites">Chambres & Suites</a><a href="#experiences">Expériences</a><a href="#table">La Table</a></div>
         <div><h3>Suivez-nous</h3><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a><a href="#newsletter">La Lettre du Lac</a></div>
         <div className="footer-bottom"><span>© 2026 Château sur le Lac</span><span>Mentions légales · Confidentialité</span></div>

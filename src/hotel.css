@@ -10,6 +10,7 @@
 .nav-book,.availability { background:var(--rust); border:0; color:white; cursor:pointer; font:600 .68rem var(--sans); padding:17px 24px; text-transform:uppercase; transition:background .2s ease,transform .2s ease,box-shadow .2s ease; }
 .nav-book:hover,.availability:hover { background:#8f3e2b; box-shadow:0 10px 24px rgba(168,75,51,.22); transform:translateY(-2px); }
 .menu-button { background:transparent; border:0; color:var(--ink); display:none; }
+.language-toggle { background:transparent; border:1px solid var(--line); color:var(--ink); cursor:pointer; font:700 .62rem var(--sans); margin-left:18px; padding:8px 9px; }
 .menu-button.open { color:white; }
 .hero { align-items:center; background:#f7f3eb url('/hero.jpg') center/contain no-repeat; color:var(--ink); display:flex; justify-content:center; min-height:91svh; padding:120px 7vw; position:relative; text-align:center; }
 .hero-shade { display:none; }
@@ -40,6 +41,18 @@
 .availability { font-size:.66rem; }
 .confirmation { align-items:center; background:var(--green); color:white; display:flex; justify-content:space-between; margin:-24px auto 0; max-width:1230px; padding:14px 24px; }
 .confirmation button { border-color:rgba(255,255,255,.4); color:white; }
+.reservation-form { background:white; border:1px solid var(--line); box-shadow:var(--shadow); margin:16px auto 28px; max-width:1230px; padding:30px; }
+.form-heading { align-items:flex-start; display:flex; justify-content:space-between; }
+.form-heading h3 { font-size:2rem; margin:0; }
+.form-heading .eyebrow { margin-bottom:10px; }
+.payment-badge { background:var(--green); color:white; font:700 .62rem var(--sans); letter-spacing:.08em; padding:10px 12px; text-transform:uppercase; }
+.form-grid { display:grid; gap:18px; grid-template-columns:repeat(2,1fr); margin:24px 0; }
+.form-grid label { display:flex; flex-direction:column; gap:8px; }
+.form-grid label span { color:var(--muted); font-size:.64rem; font-weight:700; text-transform:uppercase; }
+.form-grid input,.form-grid select { background:var(--ivory); border:1px solid var(--line); border-radius:0; color:var(--ink); min-height:46px; padding:0 12px; }
+.payment-note { background:#f7f3eb; border-left:3px solid var(--rust); line-height:1.6; margin:0 0 22px; padding:14px 16px; }
+.payment-note strong { font-size:.72rem; text-transform:uppercase; }
+.form-success { color:var(--muted); font-size:.75rem; margin:18px 0 0; }
 .section { margin:0 auto; max-width:1440px; padding:130px 7vw; }
 .history { align-items:center; display:grid; gap:6vw; grid-template-columns:1.15fr .85fr; margin:0 auto; max-width:1440px; padding:0 7vw 130px; }
 .history-image { display:grid; gap:12px; grid-template-columns:1fr 1fr; }
@@ -96,7 +109,7 @@ footer .footer-brand p { color:rgba(255,255,255,.6); }
 @keyframes rise { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
 .reveal { animation:rise 1s .15s both; }
 @media(max-width:860px){
-  .site-header{height:74px;padding:0 22px}.brand{font-size:1rem}.brand-mark{height:29px;width:29px}.menu-button{display:block;position:relative;z-index:3}.nav-links{align-items:flex-start;background:var(--green);display:none;flex-direction:column;inset:0;justify-content:center;padding:90px 12vw;position:fixed}.nav-links.open{display:flex}.nav-links.open a{color:white}.nav-links a{font:2.2rem var(--display);text-transform:none}.hero{min-height:84svh;padding:0 24px 75px}.hero h1{font-size:clamp(3.2rem,17vw,5.2rem)}.hero-copy{font-size:.92rem}.scroll-cue{display:none}.booking-wrap{padding:0 18px 35px}.booking-bar{grid-template-columns:1fr 1fr;top:-24px}.booking-bar>label,.guest-field{min-height:84px;padding:0 16px}.availability{min-height:84px}.section{padding:88px 24px}.intro,.dining{gap:48px;grid-template-columns:1fr}.history{gap:36px;grid-template-columns:1fr;padding:0 24px 88px}.intro-copy{padding-top:0}.panorama{min-height:480px}.section-heading{align-items:flex-start;flex-direction:column;gap:25px}.suite-grid{gap:55px;grid-template-columns:1fr}.suite-image{aspect-ratio:5/6}.experience{grid-template-columns:1fr}.experience-image{min-height:520px}.experience-content{padding:75px 24px}.dining-image{grid-row:1}.quote-section{padding:80px 24px}footer{grid-template-columns:1fr 1fr;padding:70px 24px 25px}.footer-brand{grid-column:1/-1}
+  .site-header{height:74px;padding:0 22px}.brand{font-size:1rem}.brand-mark{height:29px;width:29px}.language-toggle{margin-left:auto;margin-right:10px}.menu-button{display:block;position:relative;z-index:3}.nav-links{align-items:flex-start;background:var(--green);display:none;flex-direction:column;inset:0;justify-content:center;padding:90px 12vw;position:fixed}.nav-links.open{display:flex}.nav-links.open a{color:white}.nav-links a{font:2.2rem var(--display);text-transform:none}.hero{min-height:84svh;padding:0 24px 75px}.hero h1{font-size:clamp(3.2rem,17vw,5.2rem)}.hero-copy{font-size:.92rem}.scroll-cue{display:none}.booking-wrap{padding:0 18px 35px}.booking-bar{grid-template-columns:1fr 1fr;top:-24px}.booking-bar>label,.guest-field{min-height:84px;padding:0 16px}.availability{min-height:84px}.reservation-form{padding:22px}.form-grid{grid-template-columns:1fr}.section{padding:88px 24px}.intro,.dining{gap:48px;grid-template-columns:1fr}.history{gap:36px;grid-template-columns:1fr;padding:0 24px 88px}.intro-copy{padding-top:0}.panorama{min-height:480px}.section-heading{align-items:flex-start;flex-direction:column;gap:25px}.suite-grid{gap:55px;grid-template-columns:1fr}.suite-image{aspect-ratio:5/6}.experience{grid-template-columns:1fr}.experience-image{min-height:520px}.experience-content{padding:75px 24px}.dining-image{grid-row:1}.quote-section{padding:80px 24px}footer{grid-template-columns:1fr 1fr;padding:70px 24px 25px}.footer-brand{grid-column:1/-1}
 }
 @media(max-width:520px){.booking-bar{grid-template-columns:1fr}.booking-bar>label,.guest-field{border-bottom:1px solid var(--line);border-right:0}.confirmation{margin-top:-10px}footer{grid-template-columns:1fr}.footer-brand,.footer-bottom{grid-column:1}.footer-bottom{flex-direction:column;gap:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
