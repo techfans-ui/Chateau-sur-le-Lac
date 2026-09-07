@@ -27,6 +27,12 @@ const suites = [
   },
 ]
 
+const nightsBetween = (arrival: string, departure: string) => {
+  const start = new Date(`${arrival}T00:00:00`)
+  const end = new Date(`${departure}T00:00:00`)
+  return Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000))
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [guests, setGuests] = useState(2)
@@ -39,6 +45,9 @@ function App() {
   const [guestEmail, setGuestEmail] = useState('')
   const [language, setLanguage] = useState<'fr' | 'en'>('fr')
   const [submitted, setSubmitted] = useState(false)
+  const [consent, setConsent] = useState(false)
+
+  const nights = nightsBetween(arrival, departure)
 
   const copy = language === 'fr'
     ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.' }
@@ -52,8 +61,8 @@ function App() {
   const sendBooking = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSubmitted(true)
-    const message = `${copy.reserve} - Château sur le Lac%0A${copy.name}: ${guestName}%0A${copy.phone}: ${guestPhone}%0A${copy.email}: ${guestEmail}%0A${copy.room}: ${room}%0A${copy.arrival}: ${arrival}%0A${copy.departure}: ${departure}%0A${copy.guests}: ${guests}`
-    window.open(`https://wa.me/12542160899?text=${message}`, '_blank', 'noopener,noreferrer')
+    const message = `${copy.reserve} - Château sur le Lac\n${copy.name}: ${guestName}\n${copy.phone}: ${guestPhone}\n${copy.email}: ${guestEmail}\n${copy.room}: ${room}\n${copy.arrival}: ${arrival}\n${copy.departure}: ${departure}\n${copy.guests}: ${guests}\nNuits: ${nights}`
+    window.open(`https://wa.me/12542160899?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -123,8 +132,10 @@ function App() {
               <label><span>{copy.email}</span><input required type="email" value={guestEmail} onChange={(event) => setGuestEmail(event.target.value)} /></label>
               <label><span>{copy.room}</span><select value={room} onChange={(event) => setRoom(event.target.value)}>{suites.map((suite) => <option key={suite.name}>{suite.name}</option>)}</select></label>
             </div>
+            <div className="booking-summary"><span>{room}</span><strong>{nights} {nights === 1 ? 'nuit' : 'nuits'}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
             <p className="payment-note"><strong>{copy.payment}</strong><br />{copy.paymentCopy}</p>
-            <button className="availability" type="submit">{copy.send} <ArrowRight size={16} /></button>
+            <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.</span></label>
+            <button className="availability" type="submit" disabled={!consent}>{copy.send} <ArrowRight size={16} /></button>
             {submitted && <p className="form-success" role="status">{copy.sent}</p>}
           </form>
         )}
