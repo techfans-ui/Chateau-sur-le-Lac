@@ -6,7 +6,6 @@ import {
   Menu,
   Minus,
   Plus,
-  Star,
   Users,
   X,
 } from 'lucide-react'
@@ -242,7 +241,6 @@ function App() {
       </section>
 
       <section className="quote-section">
-        <div className="stars" aria-label="Cinq étoiles">{Array.from({ length: 5 }).map((_, i) => <Star key={i} size={17} fill="currentColor" />)}</div>
         <blockquote>« Un lieu qui ne cherche pas à impressionner, mais qui reste longtemps en mémoire. »</blockquote>
         <p>Émilie & Laurent · Paris</p>
       </section>
