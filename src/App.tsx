@@ -31,6 +31,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [guests, setGuests] = useState(2)
   const [confirmation, setConfirmation] = useState(false)
+  const [arrival, setArrival] = useState('2026-09-12')
+  const [departure, setDeparture] = useState('2026-09-15')
 
   const scrollToBooking = () => {
     document.querySelector('#reservation')?.scrollIntoView({ behavior: 'smooth' })
@@ -71,11 +73,11 @@ function App() {
         <div className="booking-bar">
           <label>
             <span>Arrivée</span>
-            <span className="field-value"><CalendarDays size={18} /> 12 sept. 2026</span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date d'arrivée" type="date" value={arrival} onChange={(event) => setArrival(event.target.value)} /></span>
           </label>
           <label>
             <span>Départ</span>
-            <span className="field-value"><CalendarDays size={18} /> 15 sept. 2026</span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date de départ" type="date" value={departure} min={arrival} onChange={(event) => setDeparture(event.target.value)} /></span>
           </label>
           <div className="guest-field">
             <span>Voyageurs</span>

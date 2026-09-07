@@ -32,6 +32,8 @@
 .booking-bar>label,.guest-field { border-right:1px solid var(--line); display:flex; flex-direction:column; gap:10px; justify-content:center; min-height:94px; padding:0 27px; }
 .booking-bar>label>span:first-child,.guest-field>span:first-child { color:var(--muted); font-size:.59rem; font-weight:700; text-transform:uppercase; }
 .field-value,.guest-control { align-items:center; display:flex; font:1rem var(--display); gap:10px; }
+.field-value input { background:transparent; border:0; color:var(--ink); cursor:pointer; font:inherit; min-width:0; padding:0; }
+.field-value input:focus { outline:0; }
 .guest-control button,.confirmation button { align-items:center; background:transparent; border:1px solid var(--line); cursor:pointer; display:flex; height:25px; justify-content:center; transition:background .2s ease,color .2s ease; width:25px; }
 .guest-control button:hover { background:var(--ink); color:white; }
 .guest-control button:first-of-type { margin-left:auto; }

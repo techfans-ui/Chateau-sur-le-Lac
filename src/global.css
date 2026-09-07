@@ -4,6 +4,7 @@
 html { scroll-behavior:smooth; }
 body { margin:0; min-width:320px; overflow-x:hidden; }
 button,input { font:inherit; }
+input { color:var(--ink); }
 button:focus-visible,a:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
 h1,h2,h3,p { letter-spacing:0; }
 h1,h2,h3 { color:var(--ink); font-family:var(--display); font-weight:400; }
