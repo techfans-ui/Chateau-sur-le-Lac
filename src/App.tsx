@@ -153,6 +153,13 @@ function App() {
         </button>
       </section>
 
+      <section className="manifesto" aria-label="Positionnement du Château">
+        <p className="eyebrow dark">L’hospitalité autrement</p>
+        <h2>L’espace autrement.</h2>
+        <p className="manifesto-specs">32,5 m² de confort <span>•</span> Vue sur le lac <span>•</span> Design contemporain</p>
+        <p className="manifesto-copy">Une nouvelle génération d’hospitalité à Banfora.</p>
+      </section>
+
       <section className="intro section" id="chateau">
         <div className="intro-title">
           <p className="eyebrow dark">Une adresse hors du temps</p>
