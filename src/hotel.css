@@ -74,7 +74,7 @@
 .manifesto h2 { font-size:clamp(3rem,6vw,6rem); line-height:.95; margin:0 0 22px; }
 .manifesto-specs { color:var(--ink); font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
 .manifesto-specs span { color:var(--rust); padding:0 9px; }
-.manifesto-copy { color:var(--muted); font:1.1rem var(--display); margin:28px 0 0; }
+.manifesto-copy { color:#000; font:600 1.2rem/1.5 var(--display); margin:28px 0 0; }
 .intro { display:grid; gap:10vw; grid-template-columns:1.1fr .9fr; }
 .intro h2,.section-heading h2,.dining h2,.experience h2 { font-size:clamp(2.7rem,5vw,5.4rem); line-height:.98; margin:0; }
 .intro-copy { max-width:520px; padding-top:48px; }
