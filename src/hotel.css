@@ -71,6 +71,7 @@
 .welcome-copy { color:var(--muted); font-size:1.08rem; line-height:1.8; margin:0 auto 30px; max-width:560px; }
 .welcome .text-link { margin-inline:auto; }
 .manifesto { background:#e9e5dc; margin:0 auto; max-width:1440px; padding:105px 7vw 110px; text-align:center; }
+.manifesto .eyebrow { color:#000; font-size:.86rem; letter-spacing:.14em; margin-bottom:18px; }
 .manifesto h2 { font-size:clamp(3rem,6vw,6rem); line-height:.95; margin:0 0 22px; }
 .manifesto-specs { color:var(--ink); font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
 .manifesto-specs span { color:var(--rust); padding:0 9px; }
