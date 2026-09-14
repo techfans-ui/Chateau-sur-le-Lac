@@ -26,18 +26,26 @@ const suites = [
   },
 ]
 
+const WHATSAPP_NUMBER = '12542160899'
+
+const getToday = () => {
+  const today = new Date()
+  const offset = today.getTimezoneOffset()
+  return new Date(today.getTime() - offset * 60000).toISOString().slice(0, 10)
+}
+
 const nightsBetween = (arrival: string, departure: string) => {
   const start = new Date(`${arrival}T00:00:00`)
   const end = new Date(`${departure}T00:00:00`)
-  return Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000))
+  return Math.round((end.getTime() - start.getTime()) / 86400000)
 }
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [guests, setGuests] = useState(2)
   const [confirmation, setConfirmation] = useState(false)
-  const [arrival, setArrival] = useState('2026-09-12')
-  const [departure, setDeparture] = useState('2026-09-15')
+  const [arrival, setArrival] = useState(getToday())
+  const [departure, setDeparture] = useState('')
   const [room, setRoom] = useState('Suite du Lac')
   const [guestName, setGuestName] = useState('')
   const [guestPhone, setGuestPhone] = useState('')
@@ -45,12 +53,13 @@ function App() {
   const [language, setLanguage] = useState<'fr' | 'en'>('fr')
   const [submitted, setSubmitted] = useState(false)
   const [consent, setConsent] = useState(false)
+  const [dateError, setDateError] = useState('')
 
   const nights = nightsBetween(arrival, departure)
 
   const copy = language === 'fr'
-    ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.' }
-    : { arrival: 'Check-in', departure: 'Check-out', guests: 'Guests', availability: 'Check availability', reserve: 'Book now', details: 'Prepare my reservation', room: 'Room or suite', name: 'Full name', phone: 'Phone', email: 'Email', payment: 'Payment: Orange Money Burkina Faso', paymentCopy: 'We will confirm availability and send payment instructions after your request.', send: 'Send request on WhatsApp', sent: 'Your request is ready. Our team will reply on WhatsApp.' }
+    ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.', dateError: 'Veuillez choisir une date de départ après la date d’arrivée.', consent: 'J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.', nights: 'nuit', nightsPlural: 'nuits', heroEyebrow: 'Par Mille Océans · Banfora', heroTitle: 'L’élégance au bord de l’infini', heroCopy: 'Une demeure confidentielle où le temps s’arrête, entre eaux calmes, jardins sauvages et art de vivre français.', heroCta: 'Découvrir le domaine' }
+    : { arrival: 'Check-in', departure: 'Check-out', guests: 'Guests', availability: 'Check availability', reserve: 'Book now', details: 'Prepare my reservation', room: 'Room or suite', name: 'Full name', phone: 'Phone', email: 'Email', payment: 'Payment: Orange Money Burkina Faso', paymentCopy: 'We will confirm availability and send payment instructions after your request.', send: 'Send request on WhatsApp', sent: 'Your request is ready. Our team will reply on WhatsApp.', dateError: 'Please choose a check-out date after your check-in date.', consent: 'I agree to be contacted to confirm availability and payment details.', nights: 'night', nightsPlural: 'nights', heroEyebrow: 'By Mille Océans · Banfora', heroTitle: 'Elegance at the edge of infinity', heroCopy: 'A private lakeside retreat where time slows between still waters, wild gardens, and French art de vivre.', heroCta: 'Discover the estate' }
 
   const scrollToBooking = () => {
     document.querySelector('#reservation')?.scrollIntoView({ behavior: 'smooth' })
@@ -59,9 +68,24 @@ function App() {
 
   const sendBooking = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!arrival || !departure || nightsBetween(arrival, departure) < 1) {
+      setDateError(copy.dateError)
+      return
+    }
+    setDateError('')
     setSubmitted(true)
     const message = `${copy.reserve} - Château sur le Lac\n${copy.name}: ${guestName}\n${copy.phone}: ${guestPhone}\n${copy.email}: ${guestEmail}\n${copy.room}: ${room}\n${copy.arrival}: ${arrival}\n${copy.departure}: ${departure}\n${copy.guests}: ${guests}\nNuits: ${nights}`
-    window.open(`https://wa.me/12542160899?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+  }
+
+  const showAvailability = () => {
+    if (!arrival || !departure || nightsBetween(arrival, departure) < 1) {
+      setDateError(copy.dateError)
+      setConfirmation(false)
+      return
+    }
+    setDateError('')
+    setConfirmation(true)
   }
 
   return (
@@ -89,7 +113,7 @@ function App() {
       </header>
 
       <section className="hero" id="accueil">
-        <div className="hero-shade" />
+        <h1 className="sr-only">{copy.heroTitle}</h1>
         <a className="scroll-cue" href="#reservation" aria-label="Descendre vers la réservation">
           <span>Explorer</span><ChevronDown size={18} />
         </a>
@@ -99,11 +123,11 @@ function App() {
         <div className="booking-bar">
           <label>
             <span>{copy.arrival}</span>
-            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date d'arrivée" type="date" value={arrival} onChange={(event) => setArrival(event.target.value)} /></span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date d'arrivée" min={getToday()} type="date" value={arrival} onChange={(event) => { setArrival(event.target.value); setDateError('') }} /></span>
           </label>
           <label>
             <span>{copy.departure}</span>
-            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date de départ" type="date" value={departure} min={arrival} onChange={(event) => setDeparture(event.target.value)} /></span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date de départ" min={arrival || getToday()} type="date" value={departure} onChange={(event) => { setDeparture(event.target.value); setDateError('') }} /></span>
           </label>
           <div className="guest-field">
             <span>{copy.guests}</span>
@@ -114,8 +138,9 @@ function App() {
               <button aria-label="Ajouter un voyageur" onClick={() => setGuests(Math.min(8, guests + 1))}><Plus size={14} /></button>
             </div>
           </div>
-          <button className="availability" onClick={() => setConfirmation(true)}>{copy.availability}</button>
+          <button className="availability" onClick={showAvailability}>{copy.availability}</button>
         </div>
+        {dateError && <p className="date-error" role="alert">{dateError}</p>}
         {confirmation && (
           <div className="confirmation" role="status">
             <span>{copy.details}: {guests} {copy.guests.toLowerCase()}.</span>
@@ -131,9 +156,9 @@ function App() {
               <label><span>{copy.email}</span><input required type="email" value={guestEmail} onChange={(event) => setGuestEmail(event.target.value)} /></label>
               <label><span>{copy.room}</span><select value={room} onChange={(event) => setRoom(event.target.value)}>{suites.map((suite) => <option key={suite.name}>{suite.name}</option>)}</select></label>
             </div>
-            <div className="booking-summary"><span>{room}</span><strong>{nights} {nights === 1 ? 'nuit' : 'nuits'}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
+            <div className="booking-summary"><span>{room}</span><strong>{nights} {nights === 1 ? copy.nights : copy.nightsPlural}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
             <p className="payment-note"><strong>{copy.payment}</strong><br />{copy.paymentCopy}</p>
-            <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.</span></label>
+            <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>{copy.consent}</span></label>
             <button className="availability" type="submit" disabled={!consent}>{copy.send} <ArrowRight size={16} /></button>
             {submitted && <p className="form-success" role="status">{copy.sent}</p>}
           </form>
@@ -141,14 +166,13 @@ function App() {
       </section>
 
       <section className="welcome">
-        <p className="eyebrow dark">Par Mille Océans · Banfora</p>
-        <h2>L’élégance au bord de l’infini</h2>
+        <p className="eyebrow dark">{copy.heroEyebrow}</p>
+        <h2>{copy.heroTitle}</h2>
         <p className="welcome-copy">
-          Une demeure confidentielle où le temps s’arrête, entre eaux calmes,
-          jardins sauvages et art de vivre français.
+          {copy.heroCopy}
         </p>
         <button className="text-link" onClick={scrollToBooking}>
-          Découvrir le domaine <ArrowRight size={18} />
+          {copy.heroCta} <ArrowRight size={18} />
         </button>
       </section>
 
@@ -205,7 +229,7 @@ function App() {
         <div className="suite-grid">
           {suites.map((suite, index) => (
             <article className="suite-card" key={suite.name} style={{ animationDelay: `${index * 120}ms` }}>
-              <div className="suite-image">{suite.image ? <img src={suite.image} alt={suite.name} /> : <span className="suite-placeholder">{suite.name}</span>}</div>
+              <div className="suite-image suite-animated-image">{suite.image ? <img src={suite.image} alt={suite.name} /> : <span className="suite-placeholder">{suite.name}</span>}</div>
               <div className="suite-meta"><span>{suite.detail}</span><span>{suite.price}</span></div>
               <h3>{suite.name}</h3>
               <a href="#reservation" className="text-link">Découvrir <ArrowRight size={16} /></a>
@@ -247,7 +271,7 @@ function App() {
 
       <footer>
         <div className="footer-brand"><span className="brand-mark">CSL</span><h2>Château sur le Lac</h2><p>Par Mille Océans · Banfora</p></div>
-        <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="https://maps.google.com/?q=Banfora%2C%20Cascades%2C%20Burkina%20Faso" target="_blank" rel="noreferrer">Voir l’itinéraire</a><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href="https://wa.me/12542160899" target="_blank" rel="noreferrer">WhatsApp&nbsp;: +1 254 216 0899</a></div>
+        <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="https://maps.google.com/?q=Banfora%2C%20Cascades%2C%20Burkina%20Faso" target="_blank" rel="noreferrer">Voir l’itinéraire</a><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">WhatsApp</a></div>
         <div><h3>Le Château</h3><a href="#suites">Chambres & Suites</a><a href="#experiences">Expériences</a><a href="#table">La Table</a></div>
         <div><h3>Suivez-nous</h3><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a><a href="#newsletter">La Lettre du Lac</a></div>
         <div className="footer-bottom"><span>© 2026 Château sur le Lac</span><span>Mentions légales · Confidentialité</span></div>
