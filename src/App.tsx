@@ -17,40 +17,50 @@ const suites = [
     detail: '2 hôtes · 42 m²',
     price: 'À partir de 480 €',
     image: '/chambre1.jpg',
+    amenities: 'Vue sur le lac · Lit king-size · Salle de bains privative',
   },
   {
     name: 'Suite des Cèdres',
     detail: '2 hôtes · 55 m²',
     price: 'À partir de 620 €',
     image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=85',
+    amenities: 'Vue sur les jardins · Lit king-size · Salon privé',
   },
 ]
+
+const getToday = () => {
+  const today = new Date()
+  const offset = today.getTimezoneOffset()
+  return new Date(today.getTime() - offset * 60000).toISOString().slice(0, 10)
+}
 
 const nightsBetween = (arrival: string, departure: string) => {
   const start = new Date(`${arrival}T00:00:00`)
   const end = new Date(`${departure}T00:00:00`)
-  return Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000))
+  return Math.round((end.getTime() - start.getTime()) / 86400000)
 }
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [guests, setGuests] = useState(2)
   const [confirmation, setConfirmation] = useState(false)
-  const [arrival, setArrival] = useState('2026-09-12')
-  const [departure, setDeparture] = useState('2026-09-15')
+  const [arrival, setArrival] = useState(getToday())
+  const [departure, setDeparture] = useState('')
   const [room, setRoom] = useState('Suite du Lac')
+  const [currency, setCurrency] = useState<'EUR' | 'FCFA'>('EUR')
   const [guestName, setGuestName] = useState('')
   const [guestPhone, setGuestPhone] = useState('')
   const [guestEmail, setGuestEmail] = useState('')
   const [language, setLanguage] = useState<'fr' | 'en'>('fr')
   const [submitted, setSubmitted] = useState(false)
   const [consent, setConsent] = useState(false)
+  const [dateError, setDateError] = useState('')
 
   const nights = nightsBetween(arrival, departure)
 
   const copy = language === 'fr'
-    ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.' }
-    : { arrival: 'Check-in', departure: 'Check-out', guests: 'Guests', availability: 'Check availability', reserve: 'Book now', details: 'Prepare my reservation', room: 'Room or suite', name: 'Full name', phone: 'Phone', email: 'Email', payment: 'Payment: Orange Money Burkina Faso', paymentCopy: 'We will confirm availability and send payment instructions after your request.', send: 'Send request on WhatsApp', sent: 'Your request is ready. Our team will reply on WhatsApp.' }
+    ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.', dateError: 'Choisissez une date de départ après la date d’arrivée.', consent: 'J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.', night: 'nuit', nights: 'nuits' }
+    : { arrival: 'Check-in', departure: 'Check-out', guests: 'Guests', availability: 'Check availability', reserve: 'Book now', details: 'Prepare my reservation', room: 'Room or suite', name: 'Full name', phone: 'Phone', email: 'Email', payment: 'Payment: Orange Money Burkina Faso', paymentCopy: 'We will confirm availability and send payment instructions after your request.', send: 'Send request on WhatsApp', sent: 'Your request is ready. Our team will reply on WhatsApp.', dateError: 'Choose a check-out date after your check-in date.', consent: 'I agree to be contacted to confirm availability and payment details.', night: 'night', nights: 'nights' }
 
   const scrollToBooking = () => {
     document.querySelector('#reservation')?.scrollIntoView({ behavior: 'smooth' })
@@ -59,9 +69,24 @@ function App() {
 
   const sendBooking = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!arrival || !departure || nightsBetween(arrival, departure) < 1) {
+      setDateError(copy.dateError)
+      return
+    }
+    setDateError('')
     setSubmitted(true)
-    const message = `${copy.reserve} - Château sur le Lac\n${copy.name}: ${guestName}\n${copy.phone}: ${guestPhone}\n${copy.email}: ${guestEmail}\n${copy.room}: ${room}\n${copy.arrival}: ${arrival}\n${copy.departure}: ${departure}\n${copy.guests}: ${guests}\nNuits: ${nights}`
+    const message = `${copy.reserve} - Château sur le Lac\n${copy.name}: ${guestName}\n${copy.phone}: ${guestPhone}\n${copy.email}: ${guestEmail}\n${copy.room}: ${room}\nTarif: ${currency === 'FCFA' ? '25 000 FCFA / nuit' : 'Tarif en euros à confirmer'}\n${copy.arrival}: ${arrival}\n${copy.departure}: ${departure}\n${copy.guests}: ${guests}\nNuits: ${nights}`
     window.open(`https://wa.me/12542160899?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+  }
+
+  const showAvailability = () => {
+    if (!arrival || !departure || nightsBetween(arrival, departure) < 1) {
+      setDateError(copy.dateError)
+      setConfirmation(false)
+      return
+    }
+    setDateError('')
+    setConfirmation(true)
   }
 
   return (
@@ -69,7 +94,7 @@ function App() {
       <header className="site-header">
         <a className="brand" href="#accueil" aria-label="Retour à l’accueil">
           <span className="brand-mark">CSL</span>
-          <span>Château sur le Lac</span>
+          <span className="brand-name">Château sur le Lac<small>Par Mille Océans · Banfora</small></span>
         </a>
         <nav className={menuOpen ? 'nav-links open' : 'nav-links'} aria-label="Navigation principale">
           <a href="#chateau" onClick={() => setMenuOpen(false)}>Le Château</a>
@@ -90,6 +115,18 @@ function App() {
 
       <section className="hero" id="accueil">
         <div className="hero-shade" />
+        <div className="hero-content">
+          <p className="eyebrow">Refuge confidentiel · Cascades de Banfora</p>
+          <h1>L’élégance au bord <span>de l’infini</span></h1>
+          <p className="hero-copy">
+            Une demeure suspendue dans le temps où l’architecture minérale rencontre
+            les eaux paisibles du lac et la douceur d’un art de vivre préservé.
+          </p>
+          <div className="hero-actions">
+            <button className="hero-book" onClick={scrollToBooking}>{copy.reserve} · Planifier votre séjour</button>
+            <a className="hero-discover" href="#chateau">Découvrir le domaine <ArrowRight size={16} /></a>
+          </div>
+        </div>
         <a className="scroll-cue" href="#reservation" aria-label="Descendre vers la réservation">
           <span>Explorer</span><ChevronDown size={18} />
         </a>
@@ -99,11 +136,11 @@ function App() {
         <div className="booking-bar">
           <label>
             <span>{copy.arrival}</span>
-            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date d'arrivée" type="date" value={arrival} onChange={(event) => setArrival(event.target.value)} /></span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label={copy.arrival} min={getToday()} type="date" value={arrival} onChange={(event) => { setArrival(event.target.value); setDateError('') }} /></span>
           </label>
           <label>
             <span>{copy.departure}</span>
-            <span className="field-value"><CalendarDays size={18} /><input aria-label="Date de départ" type="date" value={departure} min={arrival} onChange={(event) => setDeparture(event.target.value)} /></span>
+            <span className="field-value"><CalendarDays size={18} /><input aria-label={copy.departure} min={arrival || getToday()} type="date" value={departure} onChange={(event) => { setDeparture(event.target.value); setDateError('') }} /></span>
           </label>
           <div className="guest-field">
             <span>{copy.guests}</span>
@@ -114,8 +151,9 @@ function App() {
               <button aria-label="Ajouter un voyageur" onClick={() => setGuests(Math.min(8, guests + 1))}><Plus size={14} /></button>
             </div>
           </div>
-          <button className="availability" onClick={() => setConfirmation(true)}>{copy.availability}</button>
+          <button className="availability" onClick={showAvailability}>{copy.availability}</button>
         </div>
+        {dateError && <p className="date-error" role="alert">{dateError}</p>}
         {confirmation && (
           <div className="confirmation" role="status">
             <span>{copy.details}: {guests} {copy.guests.toLowerCase()}.</span>
@@ -130,10 +168,11 @@ function App() {
               <label><span>{copy.phone}</span><input required type="tel" value={guestPhone} onChange={(event) => setGuestPhone(event.target.value)} /></label>
               <label><span>{copy.email}</span><input required type="email" value={guestEmail} onChange={(event) => setGuestEmail(event.target.value)} /></label>
               <label><span>{copy.room}</span><select value={room} onChange={(event) => setRoom(event.target.value)}>{suites.map((suite) => <option key={suite.name}>{suite.name}</option>)}</select></label>
+              <label><span>Tarif préféré</span><select value={currency} onChange={(event) => setCurrency(event.target.value as 'EUR' | 'FCFA')}><option value="EUR">Tarif en euros</option><option value="FCFA">25 000 FCFA / nuit</option></select></label>
             </div>
-            <div className="booking-summary"><span>{room}</span><strong>{nights} {nights === 1 ? 'nuit' : 'nuits'}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
+            <div className="booking-summary"><span>{room}</span><strong>{currency === 'FCFA' ? '25 000 FCFA / nuit' : `${nights} ${nights === 1 ? copy.night : copy.nights}`}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
             <p className="payment-note"><strong>{copy.payment}</strong><br />{copy.paymentCopy}</p>
-            <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.</span></label>
+            <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>{copy.consent}</span></label>
             <button className="availability" type="submit" disabled={!consent}>{copy.send} <ArrowRight size={16} /></button>
             {submitted && <p className="form-success" role="status">{copy.sent}</p>}
           </form>
@@ -183,7 +222,7 @@ function App() {
           <img src="/construction.jpg" alt="Le domaine du Château sur le Lac en construction, au bord du lac" />
         </div>
         <div className="history-copy">
-          <p className="eyebrow dark">Histoire de la construction</p>
+          <p className="eyebrow dark">L’histoire du domaine</p>
           <h2>Né au bord de l’eau</h2>
           <p>
             Sur les rives de Banfora, le domaine a pris forme pierre après pierre,
@@ -206,8 +245,9 @@ function App() {
           {suites.map((suite, index) => (
             <article className="suite-card" key={suite.name} style={{ animationDelay: `${index * 120}ms` }}>
               <div className="suite-image">{suite.image ? <img src={suite.image} alt={suite.name} /> : <span className="suite-placeholder">{suite.name}</span>}</div>
-              <div className="suite-meta"><span>{suite.detail}</span><span>{suite.price}</span></div>
+              <div className="suite-meta"><span>{suite.detail}</span><span>{suite.price}<br />25 000 FCFA / nuit</span></div>
               <h3>{suite.name}</h3>
+              <details className="suite-details"><summary>Voir les équipements</summary><p>{suite.amenities}</p></details>
               <a href="#reservation" className="text-link">Découvrir <ArrowRight size={16} /></a>
             </article>
           ))}
@@ -238,6 +278,12 @@ function App() {
           <a href="#reservation" className="text-link">Réserver une table <ArrowRight size={18} /></a>
           <p className="dining-note">Restaurant gastronomique · Ouvert du mardi au dimanche</p>
         </div>
+        <div className="dining-image">
+          <img
+            src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=85"
+            alt="Une table dressée dans une salle de restaurant lumineuse"
+          />
+        </div>
       </section>
 
       <section className="quote-section">
@@ -245,10 +291,23 @@ function App() {
         <p>Émilie & Laurent · Paris</p>
       </section>
 
+      <section className="section faq-section" id="faq">
+        <div className="section-heading">
+          <div><p className="eyebrow dark">Avant votre arrivée</p><h2>Questions fréquentes</h2></div>
+          <p>Les informations essentielles pour préparer un séjour simple et serein.</p>
+        </div>
+        <div className="faq-list">
+          <details><summary>Quand puis-je arriver et partir&nbsp;?</summary><p>Les horaires d’arrivée et de départ sont confirmés par notre équipe au moment de votre réservation.</p></details>
+          <details><summary>Comment fonctionne la réservation&nbsp;?</summary><p>Envoyez votre demande via WhatsApp. Nous vérifions la disponibilité, puis vous transmettons les modalités de paiement et de confirmation.</p></details>
+          <details><summary>Le restaurant est-il ouvert aux visiteurs extérieurs&nbsp;?</summary><p>La Table des Reflets accueille les visiteurs sur réservation, du mardi au dimanche, selon les disponibilités.</p></details>
+          <details><summary>Comment venir au domaine&nbsp;?</summary><p>Le Château se trouve à Banfora, dans la région des Cascades. Utilisez le lien d’itinéraire dans la rubrique Nous trouver pour préparer votre arrivée.</p></details>
+        </div>
+      </section>
+
       <footer>
         <div className="footer-brand"><span className="brand-mark">CSL</span><h2>Château sur le Lac</h2><p>Par Mille Océans · Banfora</p></div>
         <div><h3>Nous trouver</h3><p>Banfora / Cascades</p><a href="https://maps.google.com/?q=Banfora%2C%20Cascades%2C%20Burkina%20Faso" target="_blank" rel="noreferrer">Voir l’itinéraire</a><a href="mailto:bonjour@chateausurlelac.fr">bonjour@chateausurlelac.fr</a><a href="https://wa.me/12542160899" target="_blank" rel="noreferrer">WhatsApp&nbsp;: +1 254 216 0899</a></div>
-        <div><h3>Le Château</h3><a href="#suites">Chambres & Suites</a><a href="#experiences">Expériences</a><a href="#table">La Table</a></div>
+        <div><h3>Le Château</h3><a href="#suites">Chambres & Suites</a><a href="#experiences">Expériences</a><a href="#table">La Table</a><a href="#faq">FAQ</a></div>
         <div><h3>Suivez-nous</h3><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a><a href="#newsletter">La Lettre du Lac</a></div>
         <div className="footer-bottom"><span>© 2026 Château sur le Lac</span><span>Mentions légales · Confidentialité</span></div>
       </footer>
