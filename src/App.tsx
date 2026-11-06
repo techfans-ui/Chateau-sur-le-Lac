@@ -280,8 +280,8 @@ function App() {
         </div>
         <div className="dining-image">
           <img
-            src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=85"
-            alt="Une table dressée dans une salle de restaurant lumineuse"
+            src="/terroir.jpg"
+            alt="Salon élégant aux tons chauds avec canapé et baies vitrées"
           />
         </div>
       </section>
