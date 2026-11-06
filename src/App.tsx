@@ -16,7 +16,7 @@ const suites = [
     name: 'Suite du Lac',
     detail: '2 hôtes · 42 m²',
     price: 'À partir de 480 €',
-    image: '/chambre1.jpg',
+    image: '/suite-du-lac.jpg',
     amenities: 'Vue sur le lac · Lit king-size · Salle de bains privative',
   },
   {
