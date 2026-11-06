@@ -150,7 +150,7 @@ footer .footer-brand p { color:rgba(255,255,255,.6); }
 .language-toggle { border-color:rgba(213,196,177,.35); color:var(--sand); }
 .menu-button { color:var(--ivory); }
 .hero { align-items:flex-end; background:#0e1719 url('/construction.jpg') center 55%/cover no-repeat; color:white; justify-content:center; min-height:92svh; padding:160px 7vw 112px; }
-.hero-shade { background:linear-gradient(180deg,rgba(14,23,25,.16) 4%,rgba(14,23,25,.28) 35%,rgba(14,23,25,.82) 100%); display:block; inset:0; position:absolute; }
+.hero-shade { animation:lake-ambient 26s ease-in-out infinite alternate; background:linear-gradient(180deg,rgba(14,23,25,.24) 4%,rgba(14,23,25,.32) 35%,rgba(14,23,25,.9) 100%),radial-gradient(ellipse at 24% 40%,rgba(70,96,101,.18),transparent 52%),radial-gradient(ellipse at 80% 58%,rgba(35,52,56,.28),transparent 58%); background-position:center,20% 45%,82% 55%; background-repeat:no-repeat; background-size:100% 100%,160% 160%,170% 170%; display:block; inset:0; position:absolute; }
 .hero-content { animation:hero-arrive .9s .08s both; max-width:860px; text-align:center; }
 .hero-content .eyebrow { color:var(--sand); font-size:.68rem; font-weight:400; letter-spacing:.28em; }
 .hero h1 { color:white; font-size:5.7rem; font-weight:300; line-height:.98; margin:0 auto; max-width:850px; }
@@ -195,6 +195,7 @@ footer .footer-brand p { color:rgba(255,255,255,.6); }
 footer { background:#0e1719; }
 footer a:hover { color:var(--sand); }
 @keyframes hero-arrive { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes lake-ambient { from { background-position:center,20% 45%,82% 55%; } to { background-position:center,72% 58%,34% 42%; } }
 @media(max-width:860px) {
   .site-header { height:74px; }
   .brand { font-size:1rem; }
@@ -226,3 +227,13 @@ footer a:hover { color:var(--sand); }
   .availability { min-height:62px; }
   .dining-image { aspect-ratio:4/3; }
 }
+
+.experience-options { border:1px solid var(--line); display:grid; gap:12px; margin:8px 0 0; padding:16px; }
+.experience-options legend { color:var(--ink); font-size:.66rem; font-weight:700; letter-spacing:.12em; padding:0 6px; text-transform:uppercase; }
+.experience-options label { align-items:center; color:var(--ink); display:flex; font-size:.78rem; gap:10px; }
+.experience-options input { accent-color:var(--green); flex:0 0 auto; height:16px; width:16px; }
+.addons-note { color:var(--muted); font-size:.68rem; line-height:1.55; margin:0; }
+.addon-summary { border-bottom:0; border-top:0; margin:0; padding:8px 0 14px; }
+.booking-total { align-items:center; background:var(--green); color:var(--ivory); display:flex; justify-content:space-between; margin:0 0 22px; padding:18px 20px; }
+.booking-total span { font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.booking-total strong { font:1.4rem var(--display); }

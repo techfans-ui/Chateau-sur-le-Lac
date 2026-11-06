@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-:root { --display:'Cormorant Garamond',Georgia,serif; --sans:'Plus Jakarta Sans',sans-serif; --ink:#142326; --muted:#657173; --ivory:#faf8f5; --green:#17282a; --rust:#a65b43; --line:#dedbd5; --sand:#d5c4b1; --shadow:0 18px 50px rgba(14,23,25,.12); background:var(--ivory); color:var(--ink); color-scheme:light; font-family:var(--sans); font-synthesis:none; letter-spacing:0; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
+:root { --display:'Cormorant Garamond',Georgia,serif; --sans:'Plus Jakarta Sans',sans-serif; --ink:#142326; --muted:#657173; --ivory:#faf8f5; --green:#0E1719; --rust:#a65b43; --line:#dedbd5; --sand:#d5c4b1; --shadow:0 18px 50px rgba(14,23,25,.12); background:var(--ivory); color:var(--ink); color-scheme:light; font-family:var(--sans); font-synthesis:none; letter-spacing:0; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; min-width:320px; overflow-x:hidden; }

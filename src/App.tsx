@@ -16,6 +16,7 @@ const suites = [
     name: 'Suite du Lac',
     detail: '2 hôtes · 42 m²',
     price: 'À partir de 480 €',
+    priceFCFA: 25000,
     image: '/suite-du-lac.jpg',
     amenities: 'Vue sur le lac · Lit king-size · Salle de bains privative',
   },
@@ -23,6 +24,7 @@ const suites = [
     name: 'Suite des Cèdres',
     detail: '2 hôtes · 55 m²',
     price: 'À partir de 620 €',
+    priceFCFA: 25000,
     image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=85',
     amenities: 'Vue sur les jardins · Lit king-size · Salon privé',
   },
@@ -40,6 +42,8 @@ const nightsBetween = (arrival: string, departure: string) => {
   return Math.round((end.getTime() - start.getTime()) / 86400000)
 }
 
+const formatFCFA = (amount: number) => `${new Intl.NumberFormat('fr-FR').format(amount)} FCFA`
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [guests, setGuests] = useState(2)
@@ -47,7 +51,8 @@ function App() {
   const [arrival, setArrival] = useState(getToday())
   const [departure, setDeparture] = useState('')
   const [room, setRoom] = useState('Suite du Lac')
-  const [currency, setCurrency] = useState<'EUR' | 'FCFA'>('EUR')
+  const [boatTrip, setBoatTrip] = useState(false)
+  const [botanicalTreatment, setBotanicalTreatment] = useState(false)
   const [guestName, setGuestName] = useState('')
   const [guestPhone, setGuestPhone] = useState('')
   const [guestEmail, setGuestEmail] = useState('')
@@ -57,6 +62,15 @@ function App() {
   const [dateError, setDateError] = useState('')
 
   const nights = nightsBetween(arrival, departure)
+  const selectedSuite = suites.find((suite) => suite.name === room) ?? suites[0]
+  const validStay = Boolean(arrival && departure && nights > 0)
+  const roomTotal = validStay ? nights * selectedSuite.priceFCFA : 0
+  const experienceTotal = boatTrip || botanicalTreatment ? guests * 2000 : 0
+  const totalPrice = roomTotal + experienceTotal
+  const selectedExperiences = [
+    ...(boatTrip ? ['Lever du jour en barque'] : []),
+    ...(botanicalTreatment ? ['Soin botanique'] : []),
+  ]
 
   const copy = language === 'fr'
     ? { arrival: 'Arrivée', departure: 'Départ', guests: 'Voyageurs', availability: 'Voir les disponibilités', reserve: 'Réserver', details: 'Préparer ma réservation', room: 'Chambre ou suite', name: 'Nom complet', phone: 'Téléphone', email: 'Email', payment: 'Paiement: Orange Money Burkina Faso', paymentCopy: 'Après votre demande, nous vous confirmerons la disponibilité et les instructions de paiement.', send: 'Envoyer la demande sur WhatsApp', sent: 'Votre demande est prête. Notre équipe vous répondra sur WhatsApp.', dateError: 'Choisissez une date de départ après la date d’arrivée.', consent: 'J’accepte d’être contacté pour confirmer la disponibilité et les modalités de paiement.', night: 'nuit', nights: 'nuits' }
@@ -75,7 +89,22 @@ function App() {
     }
     setDateError('')
     setSubmitted(true)
-    const message = `${copy.reserve} - Château sur le Lac\n${copy.name}: ${guestName}\n${copy.phone}: ${guestPhone}\n${copy.email}: ${guestEmail}\n${copy.room}: ${room}\nTarif: ${currency === 'FCFA' ? '25 000 FCFA / nuit' : 'Tarif en euros à confirmer'}\n${copy.arrival}: ${arrival}\n${copy.departure}: ${departure}\n${copy.guests}: ${guests}\nNuits: ${nights}`
+    const message = [
+      `${copy.reserve} - Château sur le Lac`,
+      `${copy.name}: ${guestName}`,
+      `${copy.phone}: ${guestPhone}`,
+      `${copy.email}: ${guestEmail}`,
+      `${copy.room}: ${room}`,
+      `Tarif: ${formatFCFA(selectedSuite.priceFCFA)} / nuit`,
+      `${copy.arrival}: ${arrival}`,
+      `${copy.departure}: ${departure}`,
+      `${copy.guests}: ${guests}`,
+      `Nuits: ${nights}`,
+      `Hébergement: ${formatFCFA(roomTotal)}`,
+      `Expériences: ${selectedExperiences.length ? selectedExperiences.join(', ') : 'Aucune'}`,
+      `Suppléments: ${formatFCFA(experienceTotal)}`,
+      `Total estimé: ${formatFCFA(totalPrice)}`,
+    ].join('\n')
     window.open(`https://wa.me/12542160899?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
   }
 
@@ -168,9 +197,16 @@ function App() {
               <label><span>{copy.phone}</span><input required type="tel" value={guestPhone} onChange={(event) => setGuestPhone(event.target.value)} /></label>
               <label><span>{copy.email}</span><input required type="email" value={guestEmail} onChange={(event) => setGuestEmail(event.target.value)} /></label>
               <label><span>{copy.room}</span><select value={room} onChange={(event) => setRoom(event.target.value)}>{suites.map((suite) => <option key={suite.name}>{suite.name}</option>)}</select></label>
-              <label><span>Tarif préféré</span><select value={currency} onChange={(event) => setCurrency(event.target.value as 'EUR' | 'FCFA')}><option value="EUR">Tarif en euros</option><option value="FCFA">25 000 FCFA / nuit</option></select></label>
             </div>
-            <div className="booking-summary"><span>{room}</span><strong>{currency === 'FCFA' ? '25 000 FCFA / nuit' : `${nights} ${nights === 1 ? copy.night : copy.nights}`}</strong><span>{guests} {copy.guests.toLowerCase()}</span></div>
+            <fieldset className="experience-options">
+              <legend>{language === 'fr' ? 'Expériences optionnelles' : 'Optional experiences'}</legend>
+              <label><input type="checkbox" checked={boatTrip} onChange={(event) => setBoatTrip(event.target.checked)} /><span>{language === 'fr' ? 'Lever du jour en barque' : 'Sunrise boat trip'}</span></label>
+              <label><input type="checkbox" checked={botanicalTreatment} onChange={(event) => setBotanicalTreatment(event.target.checked)} /><span>{language === 'fr' ? 'Soin botanique' : 'Botanical treatment'}</span></label>
+              <p className="addons-note">{language === 'fr' ? 'Forfait : 2 000 FCFA par voyageur pour une ou les deux expériences.' : 'Bundle: 2,000 FCFA per guest for either or both experiences.'}</p>
+            </fieldset>
+            <div className="booking-summary"><span>{room} · {validStay ? `${nights} ${nights === 1 ? copy.night : copy.nights}` : '—'} · {guests} {copy.guests.toLowerCase()}</span><strong>{validStay ? formatFCFA(roomTotal) : '—'}</strong></div>
+            <div className="booking-summary addon-summary"><span>{language === 'fr' ? 'Expériences' : 'Experiences'}</span><strong>{formatFCFA(experienceTotal)}</strong></div>
+            <div className="booking-total" aria-live="polite"><span>{language === 'fr' ? 'Total estimé' : 'Estimated total'}</span><strong>{validStay ? formatFCFA(totalPrice) : '—'}</strong></div>
             <p className="payment-note"><strong>{copy.payment}</strong><br />{copy.paymentCopy}</p>
             <label className="consent"><input required type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>{copy.consent}</span></label>
             <button className="availability" type="submit" disabled={!consent}>{copy.send} <ArrowRight size={16} /></button>
@@ -181,7 +217,6 @@ function App() {
 
       <section className="welcome">
         <p className="eyebrow dark">Par Mille Océans · Banfora</p>
-        <h2>L’élégance au bord de l’infini</h2>
         <p className="welcome-copy">
           Une demeure confidentielle où le temps s’arrête, entre eaux calmes,
           jardins sauvages et art de vivre français.
